@@ -1,26 +1,20 @@
-import random
+import pandas as pd
 
-def es_defectuosa(ri, p):
-    if ri < 1 - p:
-        return 0  # pieza en buen estado
-    else:
-        return 1  # pieza defectuosa
+Ri = [0.02, 0.31, 0.70, 0.83, 0.50]
 
-def simular_inspeccion(N, p):
-    piezas_defectuosas_por_lote = []
-    for _ in range(N):
-        ri = random.random()  # Generar un número aleatorio ri
-        BE = es_defectuosa(ri, p)  # Determinar si la pieza es defectuosa
-        piezas_defectuosas_por_lote.append(BE)
-    return sum(piezas_defectuosas_por_lote)  # Devolver el total de piezas defectuosas en el lote
+# Probabilidad
+p = 0.03
 
-# Parámetros
-N = 5  # Tamaño del lote
-p = 0.03  # Probabilidad de que una pieza sea defectuosa
+# Crear un DataFrame que almacena los valores de ri y su comparación, y los imprime en forma de tabla acá bien bonito
+df = pd.DataFrame(Ri, columns=['Ri'])
 
-# Simulación de la inspección para varios lotes
-num_lotes = 10  # Número de lotes a simular
-for i in range(num_lotes):
-    ri = random.random()  # Generar un número aleatorio ri para el lote
-    num_piezas_defectuosas = simular_inspeccion(N, p)
-    print(f"Lote {i+1}: Número de piezas defectuosas = {num_piezas_defectuosas}")
+# fórmula para determinar si cada pieza es defectuosa
+df['BE'] = df['Ri'].apply(lambda ri: 1 if ri > (1 - p) else 0)
+
+# Contar el número de piezas defectuosas
+defectuosas = df['BE'].sum()
+
+# Imprimir el DataFrame y el número total de piezas defectuosas
+print(df)
+print(f"Número total de piezas defectuosas: {defectuosas}")
+
