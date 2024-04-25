@@ -1,6 +1,6 @@
 import pandas as pd
 import math
-import numpy
+import numpy as np
 
 #distribucion exponencial
 # binomial
@@ -11,7 +11,7 @@ def exponencial (riList, media):
     variables = []
     variable = 0
     for num in riList:
-        result = -media * numpy.log(1- num)
+        result = -media * np.log(1- num)
         resultsList.append(result)
         variables.append(variable)
         variable = variable + 1
@@ -38,6 +38,50 @@ def binomial(riList, probabilidad):
         print(df)
         print(f"Número total de piezas defectuosas: {defectuosas}")
 
+def triangular(riLista, rjLista, valor_minimo, moda, valor_maximo):
+
+    ri = riLista
+    rj = rjLista
+
+    a = valor_minimo
+    b = valor_maximo
+    c = moda 
+
+    condicion = (c-a)/(b-a)
+
+    menor_igual = []
+    mayor = []
+
+    for i, j in zip(ri, rj):
+        if j <= condicion:
+            resultado = round((a + (c - a) * np.sqrt(i)), 4)
+         # resultado = round(resultado, 4)
+            menor_igual.append(resultado)
+    else:
+        menor_igual.append(np.nan)
+    
+    if j > condicion:
+        resultado2 = round((b - ((b - c) * np.sqrt(1-i))), 4)
+        # resultado2 = round(resultado2, 4)
+        mayor.append(resultado2)
+    else:
+        mayor.append(np.nan)
+
+    c1 = "  Si rj <= " + str(round(condicion, 4))
+    c2 = "  Si rj > " + str(round(condicion, 4))
+
+    df = pd.DataFrame({
+        "rj": rj,
+        "ri": ri,
+        c1: menor_igual,
+        c2: mayor
+    })
+
+    df = df.replace(np.nan, '-')
+    df.index = df.index + 1
+
+    print(df)
+
 
 def main(): 
 
@@ -59,6 +103,35 @@ def main():
             media = float(input())
 
             exponencial(listaRi, media)
+
+        if metodoSeleccionado == 2: 
+            listaRi = []
+            listaRj = []
+            min = 0
+            max = 0
+            moda = 0
+            print("ingresa la cantidad de numeros ri y rj")
+            cantidadR = int(input())
+            print("Ingresa los numeros de ri")
+            num = 1
+            while num <= cantidadR: 
+                 listaRi.append(float(input(num)))
+                 num = num +1
+            print("Ingresa los numeros de rj")
+            nume = 1
+            while nume <= cantidadR: 
+                 listaRj.append(float(input(num)))
+                 nume = nume +1
+            
+            print("Ingresa la moda")
+            moda = float(input())
+            print("Ingresa el maximo")
+            max = float(input())
+            print("Ingresa el minimo")
+            min = float(input())
+
+            triangular(listaRi, listaRj, min, moda, max)
+
         
         if metodoSeleccionado == 3:
              listaRi = []
